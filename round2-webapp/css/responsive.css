@@ -1,0 +1,32 @@
+/* Mobile Styles */
+@media screen and (max-width: 768px) {
+    .intelligence-panel {
+        position: absolute;
+        z-index: 10;
+        transform: translateX(-100%);
+    }
+    
+    .intelligence-panel.active {
+        transform: translateX(0);
+    }
+    
+    .header-controls {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Tablet Styles */
+@media screen and (max-width: 1024px) {
+    :root {
+        --sidebar-width: 280px;
+    }
+    
+    .header-content {
+        padding: 0 1rem;
+    }
+}

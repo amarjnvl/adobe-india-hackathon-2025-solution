@@ -1,0 +1,49 @@
+# Multi-stage build for Round 1B with larger model allowance
+FROM --platform=linux/amd64 python:3.11-slim as builder
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements and install
+COPY requirements_1b.txt .
+RUN pip install --no-cache-dir --user -r requirements_1b.txt
+
+# Download lightweight NLP models (within 1GB limit)
+RUN python -c "
+import nltk
+nltk.download('punkt', download_dir='/root/.local/share/nltk_data')
+nltk.download('stopwords', download_dir='/root/.local/share/nltk_data')
+"
+
+# Final runtime image
+FROM --platform=linux/amd64 python:3.11-slim
+
+# Copy Python packages and models from builder
+COPY --from=builder /root/.local /root/.local
+
+# Set environment variables
+ENV PATH=/root/.local/bin:$PATH
+ENV NLTK_DATA=/root/.local/share/nltk_data
+
+# Set working directory
+WORKDIR /app
+
+# Create required directories
+RUN mkdir -p /app/input /app/output
+
+# Copy source code
+COPY src/ ./src/
+COPY main_1b.py .
+
+# Set optimization flags
+ENV PYTHONOPTIMIZE=1
+ENV PYTHONUNBUFFERED=1
+
+# Ensure executable permissions
+RUN chmod +x main_1b.py
+
+# Entry point for Round 1B
+ENTRYPOINT ["python", "main_1b.py", "/app/input/specification.json", "/app/output"]

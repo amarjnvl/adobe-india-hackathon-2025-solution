@@ -1,0 +1,9 @@
+{
+  "documents": [
+    "/app/input/research_paper_1.pdf",
+    "/app/input/research_paper_2.pdf",
+    "/app/input/research_paper_3.pdf"
+  ],
+  "persona": "PhD Researcher in Computational Biology with expertise in machine learning applications for drug discovery",
+  "job_to_be_done": "Prepare a comprehensive literature review focusing on methodologies, datasets, and performance benchmarks for graph neural networks in drug discovery"
+}

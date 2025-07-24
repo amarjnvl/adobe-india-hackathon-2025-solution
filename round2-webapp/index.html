@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connecting the Dots - Intelligent PDF Reader</title>
+    
+    <!-- Adobe PDF Embed API -->
+    <script src="https://acrobatservices.adobe.com/view-sdk/viewer.js"></script>
+    
+    <!-- Application Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <h2>Connecting the Dots...</h2>
+            <p id="loading-status">Initializing intelligent PDF reader</p>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="app-container" class="app-container hidden">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <i class="fas fa-file-pdf logo-icon"></i>
+                    <h1>Intelligent PDF Reader</h1>
+                    <span class="tagline">Connecting the Dots</span>
+                </div>
+                
+                <div class="header-controls">
+                    <button id="upload-btn" class="btn btn-primary">
+                        <i class="fas fa-upload"></i>
+                        Upload PDF
+                    </button>
+                    
+                    <button id="persona-btn" class="btn btn-secondary">
+                        <i class="fas fa-user-cog"></i>
+                        Set Persona
+                    </button>
+                    
+                    <div class="view-toggle">
+                        <button id="single-view" class="toggle-btn active">Single</button>
+                        <button id="multi-view" class="toggle-btn">Multi</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Sidebar for Intelligence Panel -->
+            <aside id="intelligence-panel" class="intelligence-panel">
+                <div class="panel-header">
+                    <h3><i class="fas fa-brain"></i> Document Intelligence</h3>
+                    <button id="toggle-panel" class="panel-toggle">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </div>
+                
+                <!-- Document Outline -->
+                <div class="intel-section">
+                    <div class="section-header">
+                        <h4><i class="fas fa-list"></i> Document Outline</h4>
+                        <button class="collapse-btn"><i class="fas fa-chevron-down"></i></button>
+                    </div>
+                    <div id="document-outline" class="outline-content">
+                        <div class="outline-placeholder">
+                            <i class="fas fa-file-alt"></i>
+                            <p>Upload a PDF to see its structure</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Related Insights -->
+                <div class="intel-section">
+                    <div class="section-header">
+                        <h4><i class="fas fa-lightbulb"></i> Related Insights</h4>
+                        <button class="collapse-btn"><i class="fas fa-chevron-down"></i></button>
+                    </div>
+                    <div id="related-insights" class="insights-content">
+                        <div class="insights-placeholder">
+                            <i class="fas fa-magic"></i>
+                            <p>Set a persona to discover relevant insights</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Navigation -->
+                <div class="intel-section">
+                    <div class="section-header">
+                        <h4><i class="fas fa-compass"></i> Quick Navigation</h4>
+                        <button class="collapse-btn"><i class="fas fa-chevron-down"></i></button>
+                    </div>
+                    <div id="quick-nav" class="nav-content">
+                        <!-- Dynamic navigation items -->
+                    </div>
+                </div>
+            </aside>
+
+            <!-- PDF Viewer Container -->
+            <div id="pdf-container" class="pdf-container">
+                <div id="adobe-dc-view" class="adobe-embed-container"></div>
+                
+                <!-- Welcome Screen -->
+                <div id="welcome-screen" class="welcome-screen">
+                    <div class="welcome-content">
+                        <div class="welcome-icon">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <h2>Welcome to Intelligent PDF Reading</h2>
+                        <p>Upload a PDF document to experience the future of reading</p>
+                        
+                        <div class="features-grid">
+                            <div class="feature-card">
+                                <i class="fas fa-search"></i>
+                                <h4>Smart Structure</h4>
+                                <p>Automatically extracts headings and outlines</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-user-tie"></i>
+                                <h4>Persona-Aware</h4>
+                                <p>Tailors insights to your role and goals</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-link"></i>
+                                <h4>Connected Ideas</h4>
+                                <p>Links related concepts across documents</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-zap"></i>
+                                <h4>Lightning Fast</h4>
+                                <p>Instant analysis with offline processing</p>
+                            </div>
+                        </div>
+                        
+                        <button id="demo-btn" class="btn btn-outline">
+                            <i class="fas fa-play"></i>
+                            Try Demo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Persona Configuration Modal -->
+    <div id="persona-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-cog"></i> Configure Your Persona</h3>
+                <button id="close-persona-modal" class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="persona-type">What's your role?</label>
+                    <select id="persona-type" class="form-select">
+                        <option value="">Select your role...</option>
+                        <option value="researcher">Researcher/Academic</option>
+                        <option value="student">Student</option>
+                        <option value="analyst">Business Analyst</option>
+                        <option value="investor">Investment Professional</option>
+                        <option value="engineer">Engineer/Developer</option>
+                        <option value="manager">Manager/Executive</option>
+                        <option value="journalist">Journalist/Writer</option>
+                        <option value="consultant">Consultant</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="persona-description">Describe your expertise and focus areas:</label>
+                    <textarea id="persona-description" class="form-textarea" 
+                              placeholder="e.g., PhD researcher in machine learning with focus on natural language processing and neural networks..."></textarea>
+                </div>
+                
+                <div class="form-group">  
+                    <label for="job-description">What are you trying to accomplish?</label>
+                    <textarea id="job-description" class="form-textarea"
+                              placeholder="e.g., Prepare a comprehensive literature review on transformer models for my research paper..."></textarea>
+                </div>
+                
+                <div class="persona-presets">
+                    <h4>Quick Presets:</h4>
+                    <div class="preset-buttons">
+                        <button class="preset-btn" data-preset="ml-researcher">
+                            <i class="fas fa-microscope"></i>
+                            ML Researcher
+                        </button>
+                        <button class="preset-btn" data-preset="business-analyst">
+                            <i class="fas fa-chart-line"></i>
+                            Business Analyst
+                        </button>
+                        <button class="preset-btn" data-preset="student">
+                            <i class="fas fa-graduation-cap"></i>
+                            Student
+                        </button>
+                        <button class="preset-btn" data-preset="investor">
+                            <i class="fas fa-coins"></i>
+                            Investor
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button id="save-persona" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    Save Persona
+                </button>
+                <button id="cancel-persona" class="btn btn-secondary">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- File Upload Handler -->
+    <input type="file" id="file-input" accept=".pdf" multiple style="display: none;">
+
+    <!-- Scripts -->
+    <script src="js/adobe-embed.js"></script>
+    <script src="js/pdf-intelligence.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
+
